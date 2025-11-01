@@ -92,7 +92,7 @@ if st.button("🎲 Generate Recipe", type="primary"):
                 # Tokenize
                 ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
                 
-                # Generate
+                # Generate with improved parameters
                 out = model.generate(
                     ids,
                     max_length=max_length,
@@ -100,6 +100,10 @@ if st.button("🎲 Generate Recipe", type="primary"):
                     top_p=top_p,
                     do_sample=True,
                     pad_token_id=tokenizer.eos_token_id,
+                    repetition_penalty=1.2,  # Reduce repetition
+                    no_repeat_ngram_size=3,  # Prevent repeating 3-word phrases
+                    early_stopping=True,
+                    num_beams=1,
                 )
                 
                 # Decode
