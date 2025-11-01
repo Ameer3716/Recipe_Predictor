@@ -14,50 +14,29 @@ except ImportError:
 @st.cache_resource
 def load_model():
     """Load the model and tokenizer with caching"""
+    # Load from Hugging Face Hub
+    MODEL_NAME = "Ameer15/Recipe_predictor"
+    
     try:
-        # Try multiple possible paths
-        possible_paths = [
-            "./gpt2-recipes",  # Relative to repo root
-            "gpt2-recipes",    # Alternative relative path
-            "/kaggle/working/gpt2-recipes",  # Kaggle path (for local testing)
-        ]
+        st.info(f"Loading model from Hugging Face: {MODEL_NAME}")
         
-        model_path = None
-        for path in possible_paths:
-            if os.path.exists(path):
-                model_path = path
-                break
-        
-        if model_path is None:
-            st.error("""
-            ❌ Model files not found!
-            
-            Please ensure the following files are in the `gpt2-recipes/` directory:
-            - config.json
-            - tokenizer.json
-            - tokenizer_config.json
-            - vocab.json
-            - merges.txt
-            - pytorch_model.bin (or model weights)
-            """)
-            st.stop()
-        
-        st.info(f"Loading model from: {model_path}")
-        
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        model = AutoModelForCausalLM.from_pretrained(model_path).to(device)
+        model = AutoModelForCausalLM.from_pretrained(MODEL_NAME).to(device)
         
         st.success(f"✅ Model loaded successfully on {device.upper()}")
         return tokenizer, model
     
     except Exception as e:
-        st.error(f"Error loading model: {str(e)}")
-        st.info("""
+        st.error(f"Error loading model from Hugging Face: {str(e)}")
+        st.info(f"""
         **Troubleshooting:**
-        1. Ensure model files are pushed to GitHub
-        2. Check that requirements.txt includes all dependencies
-        3. Verify file paths in your repository
+        
+        1. Verify the model exists at: https://huggingface.co/{MODEL_NAME}
+        2. Check that the model upload completed successfully
+        3. Ensure requirements.txt includes: transformers>=4.30.0
+        
+        If the model isn't uploaded yet, run the upload script in your Kaggle notebook.
         """)
         st.stop()
 
