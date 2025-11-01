@@ -2,7 +2,6 @@ tokenized_train/
 tokenized_val/
 checkpoint-*/
 **/checkpoint-*/
-gpt2-recipes/
 *.pt
 *.bin
 *.pth
@@ -12,3 +11,15 @@ training_args.bin
 *.log
 *.ipynb_checkpoints
 __pycache__/
+
+# ignore whole model dir...
+gpt2-recipes/*
+
+# ...except HF small files we actually need
+!gpt2-recipes/config.json
+!gpt2-recipes/generation_config.json
+!gpt2-recipes/tokenizer.json
+!gpt2-recipes/tokenizer_config.json
+!gpt2-recipes/merges.txt
+!gpt2-recipes/vocab.json
+!gpt2-recipes/special_tokens_map.json
